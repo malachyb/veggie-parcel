@@ -1,5 +1,5 @@
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from .models import *
 
 
@@ -17,5 +17,5 @@ def all_products(request):
 
 
 def singleproduct(request, prod_id):
-    prod = Product.objects.get(pk=prod_id)
+    prod = get_object_or_404(Product, pk=prod_id)
     return render(request, 'single_product.html', {'product': prod})
