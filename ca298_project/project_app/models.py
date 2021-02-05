@@ -15,3 +15,9 @@ class Order(models.Model):
 
     def price(self):
         return self.product.price * self.quantity
+
+
+class Vegetable(models.Model):
+    id = models.AutoField(primary_key=True)
+    veg_name = models.CharField(max_length=50)
+    price = models.DecimalField(max_digits=5, decimal_places=2)
