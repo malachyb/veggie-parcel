@@ -14,3 +14,8 @@ def register(request):
 def all_products(request):
     all_p = Product.objects.all()
     return render(request, 'all_vegetables.html', {"products": all_p})
+
+
+def singleproduct(request, prod_id):
+    prod = Product.objects.get(pk=prod_id)
+    return render(request, 'single_product.html', {'product': prod})

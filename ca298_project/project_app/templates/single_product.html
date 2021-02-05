@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ product.name }}{% endblock %}
+
+{% block content %}
+    <div class="card">
+        <img class="card-img-top" src="..." alt="Card image cap">
+        <div class="card-body">
+            <h5 class="card-title">{{ product.name }}</h5>
+            <p class="card-text">{{ product.description }}</p>
+            <a href="#" class="btn btn-primary">Buy - {{ product.price }}</a>
+        </div>
+    </div>
+{% endblock %}
