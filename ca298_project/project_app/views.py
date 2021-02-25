@@ -1,23 +1,10 @@
 from django.http import HttpResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 from .forms import *
-from .models import *
+from .models import Product, User
 from django.views.generic import CreateView
-from django.contrib.auth import login
-
-
-class UserSignupView(CreateView):
-    model = User
-    form_class = SignupForm
-    template_name = 'user_signup.html'
-
-    def get_context_data(self, **kwargs):
-        return super().get_context_data(**kwargs)
-
-    def form_valid(self, form):
-        user = form.save()
-        login(self.request, user)
-        return redirect('/')
+from django.contrib.auth import login, logout
+from django.contrib.auth.views import LoginView
 
 
 def index(request):
@@ -47,3 +34,40 @@ def product_form(request):
     else:
         form = ProductForm()
         return render(request, 'form.html', {'form': form})
+
+
+class UserSignupView(CreateView):
+    model = User
+    form_class = SignupForm
+    template_name = 'user_signup.html'
+
+    def get_context_data(self, **kwargs):
+        return super().get_context_data(**kwargs)
+
+    def form_valid(self, form):
+        user = form.save()
+        login(self.request, user)
+        return redirect('/')
+
+
+class AdminSignupView(CreateView):
+    model = User
+    form_class = AdminSignupForm
+    template_name = 'admin_signup.html'
+
+    def get_context_data(self, **kwargs):
+        return super().get_context_data(**kwargs)
+
+    def form_valid(self, form):
+        user = form.save()
+        login(self.request, user)
+        return redirect('/')
+
+
+class Login(LoginView):
+    template_name = 'login.html'
+
+
+def logout_view(request):
+    logout(request)
+    return redirect('/')
