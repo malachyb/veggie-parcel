@@ -4,6 +4,7 @@ from .forms import *
 from .models import Product, User
 from django.views.generic import CreateView
 from django.contrib.auth import login, logout
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
 
 
@@ -15,11 +16,13 @@ def register(request):
     return HttpResponse("Hello from registration page")
 
 
+@login_required
 def all_products(request):
     all_p = Product.objects.all()
     return render(request, 'all_vegetables.html', {'products': all_p})
 
 
+@login_required
 def singleproduct(request, prod_id):
     prod = get_object_or_404(Product, pk=prod_id)
     return render(request, 'single_product.html', {'product': prod})
@@ -68,6 +71,7 @@ class Login(LoginView):
     template_name = 'login.html'
 
 
+@login_required
 def logout_view(request):
     logout(request)
     return redirect('/')
