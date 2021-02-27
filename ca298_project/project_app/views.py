@@ -6,6 +6,7 @@ from django.views.generic import CreateView
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
+from .permissions import admin_required
 
 
 def index(request):
