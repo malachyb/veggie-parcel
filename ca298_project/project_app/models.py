@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 
 
 class Product(models.Model):
@@ -21,3 +22,7 @@ class Vegetable(models.Model):
     id = models.AutoField(primary_key=True)
     veg_name = models.CharField(max_length=50)
     price = models.DecimalField(max_digits=5, decimal_places=2)
+
+
+class User(AbstractUser):
+    is_admin = models.BooleanField(default=False)
