@@ -33,3 +33,15 @@ class Vegetable(models.Model):
 
 class User(AbstractUser):
     is_admin = models.BooleanField(default=False)
+
+
+class Basket(models.Model):
+    id = models.AutoField(primary_key=True)
+    user = models.OneToOneField(User, models.CASCADE)
+
+
+class OrderItem(models.Model):
+    id = models.AutoField(primary_key=True)
+    veg = models.ForeignKey(Vegetable, models.CASCADE)
+    message = models.CharField(max_length=50)
+    basket = models.ForeignKey(Basket, models.CASCADE)
