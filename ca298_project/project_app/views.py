@@ -1,4 +1,3 @@
-from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import *
 from .models import Product, User
@@ -14,27 +13,27 @@ def index(request):
 
 
 def register(request):
-    return HttpResponse("Hello from registration page")
+    return render(request, 'registration.html')
 
 
-@login_required
 def all_products(request):
     all_p = Product.objects.all()
     return render(request, 'all_vegetables.html', {'products': all_p})
 
 
-@login_required
 def singleproduct(request, prod_id):
     prod = get_object_or_404(Product, pk=prod_id)
     return render(request, 'single_product.html', {'product': prod})
 
 
+@login_required
+@admin_required
 def product_form(request):
     if request.method == "POST":
-        form = ProductForm(request.POST)
+        form = ProductForm(request.POST, request.FILES)
         if form.is_valid():
-            prod = form.save()
-            return render(request, 'single_product.html', {'product': prod})
+            new_prod = form.save()
+            return render(request, 'single_product.html', {'product': new_prod})
     else:
         form = ProductForm()
         return render(request, 'form.html', {'form': form})
@@ -72,7 +71,6 @@ class Login(LoginView):
     template_name = 'login.html'
 
 
-@login_required
 def logout_view(request):
     logout(request)
     return redirect('/')
