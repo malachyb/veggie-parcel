@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import *
-from .models import Product, User
+from .models import Product, User, Basket, BasketItems
 from django.views.generic import CreateView
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
@@ -74,3 +74,23 @@ class Login(LoginView):
 def logout_view(request):
     logout(request)
     return redirect('/')
+
+
+@login_required
+def add_to_basket(request, prod_id):
+    user = request.user
+    shopping_basket = Basket.objects.filter(user_id=user)
+
+    if not shopping_basket:
+        shopping_basket = Basket(user_id=user).save()
+
+    product = Product.objects.get(pk=prod_id)
+    basket_items = BasketItems.objects.filter(basket_id=shopping_basket.id, product_id=product.id).first()
+
+    if basket_items is None:
+        basket_items = BasketItems(basket_id=shopping_basket, product_id=product.id).save()
+    else:
+        basket_items = basket_items.quantity + 1
+        basket_items.save()
+
+    return render(request, 'single_product.html', {'product': product, 'added': True})
