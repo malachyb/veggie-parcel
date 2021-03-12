@@ -39,6 +39,13 @@ def product_form(request):
         return render(request, 'form.html', {'form': form})
 
 
+@login_required
+def basket(request):
+    user = request.user
+    user_basket = BasketItems.objects.filter(basket_id=user.id)
+    return render(request, 'all_vegetables.html', {'basket': user_basket})
+
+
 class UserSignupView(CreateView):
     model = User
     form_class = SignupForm
