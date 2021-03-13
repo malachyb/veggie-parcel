@@ -45,8 +45,6 @@ def basket(request):
     basket_id = Basket.objects.get(user_id=user.id).id
     user_basket = BasketItems.objects.filter(basket_id=basket_id)
     products = [Product.objects.get(id=item.product_id) for item in user_basket]
-    for p in products:
-        print(p.name)
     return render(request, 'basket.html', {'basket': user_basket, "products": products})
 
 
