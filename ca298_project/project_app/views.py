@@ -42,8 +42,12 @@ def product_form(request):
 @login_required
 def basket(request):
     user = request.user
-    user_basket = BasketItems.objects.filter(basket_id=user.id)
-    return render(request, 'all_vegetables.html', {'basket': user_basket})
+    basket_id = Basket.objects.get(user_id=user.id).id
+    user_basket = BasketItems.objects.filter(basket_id=basket_id)
+    products = [Product.objects.get(id=item.product_id) for item in user_basket]
+    for p in products:
+        print(p.name)
+    return render(request, 'basket.html', {'basket': user_basket, "products": products})
 
 
 class UserSignupView(CreateView):
@@ -86,10 +90,11 @@ def logout_view(request):
 @login_required
 def add_to_basket(request, prod_id):
     user = request.user
-    shopping_basket = Basket.objects.filter(user_id=user)
-
-    if not shopping_basket:
-        shopping_basket = Basket(user_id=user).save()
+    try:
+        shopping_basket = Basket.objects.get(user_id=user)
+    except:
+        shopping_basket = Basket(user_id=user)
+        shopping_basket.save()
 
     product = Product.objects.get(pk=prod_id)
     basket_items = BasketItems.objects.filter(basket_id=shopping_basket.id, product_id=product.id).first()
@@ -97,7 +102,7 @@ def add_to_basket(request, prod_id):
     if basket_items is None:
         basket_items = BasketItems(basket_id=shopping_basket, product_id=product.id).save()
     else:
-        basket_items = basket_items.quantity + 1
+        basket_items.quantity = basket_items.quantity + 1
         basket_items.save()
 
     return render(request, 'single_product.html', {'product': product, 'added': True})

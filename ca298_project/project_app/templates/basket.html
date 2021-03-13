@@ -3,14 +3,14 @@
 {% block title %}Vegetables{% endblock %}
 
 {% block content %}
-    {% for p in basket %}
+    {% for p in products %}
         <div class="card">
             <img class="card-img-top" src="..." alt="Card image cap">
             <div class="card-body">
                 <h5 class="card-title">{{ p.name }}</h5>
                 <p class="card-text">{{ p.description }}</p>
-                <a href="#" class="btn btn-primary">Buy - {{ p.price }}</a>
             </div>
         </div>
     {% endfor %}
+    <a href="#" class="btn btn-primary">Order all</a>
 {% endblock %}

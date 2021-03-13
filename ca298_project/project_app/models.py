@@ -27,7 +27,7 @@ class Order(models.Model):
     shipping_addr = models.CharField(max_length=200, null=True)
 
 
-class OrderItems(models.Model):
+class OrderItem(models.Model):
     id = models.AutoField(primary_key=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.IntegerField()
