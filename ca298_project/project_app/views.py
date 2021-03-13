@@ -103,4 +103,4 @@ def add_to_basket(request, prod_id):
         basket_items.quantity = basket_items.quantity + 1
         basket_items.save()
 
-    return render(request, 'single_product.html', {'product': product, 'added': True})
+    return basket(request)
