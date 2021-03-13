@@ -22,12 +22,12 @@ class Product(models.Model):
 
 class Order(models.Model):
     id = models.AutoField(primary_key=True)
-    user_id = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     date_created = models.DateField(auto_now_add=True, null=True)
     shipping_addr = models.CharField(max_length=200, null=True)
 
 
-class OrderItem(models.Model):
+class OrderItems(models.Model):
     id = models.AutoField(primary_key=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.IntegerField()

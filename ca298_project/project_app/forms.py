@@ -1,5 +1,5 @@
 from django.forms import ModelForm, ModelChoiceField
-from .models import Product, User, ProductCategory
+from .models import Product, User, ProductCategory, Order
 from django.contrib.auth.forms import UserCreationForm
 from django.db import transaction
 from django import forms
@@ -49,3 +49,9 @@ class UserLoginForm(AuthenticationForm):
 
     username = forms.TextInput(attrs={'class': 'form-control', 'placeholder': '', 'id': 'hello'})
     password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': '', 'id': 'hi'}))
+
+
+class OrderForm(ModelForm):
+    class Meta:
+        model = Order
+        fields = ["shipping_addr"]

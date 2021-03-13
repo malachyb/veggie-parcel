@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import *
-from .models import Product, User, Basket, BasketItems
+from .models import Product, User, Basket, BasketItems, Order, OrderItems
 from django.views.generic import CreateView
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
@@ -104,3 +104,24 @@ def add_to_basket(request, prod_id):
         basket_items.save()
 
     return basket(request)
+
+
+@login_required
+def order(request):
+    if request.method == "POST":
+        print(request.POST)
+        form = OrderForm(request.POST)
+        if form.is_valid():
+            user = request.user
+            form.user_id = user
+            basket_id = Basket.objects.get(user_id=user.id).id
+            for item in BasketItems.objects.filter(basket_id=basket_id):
+                OrderItems(product=item.product, quantity=item.quantity).save()
+                item.delete()
+            new_prod = form.save()
+            new_prod.user_id = user
+            new_prod.save()
+            return basket(request)
+    else:
+        form = OrderForm
+        return render(request, 'orderform.html', {'form': form})
