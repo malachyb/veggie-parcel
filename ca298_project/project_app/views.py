@@ -109,19 +109,23 @@ def add_to_basket(request, prod_id):
 @login_required
 def order(request):
     if request.method == "POST":
-        print(request.POST)
         form = OrderForm(request.POST)
         if form.is_valid():
             user = request.user
             form.user_id = user
             basket_id = Basket.objects.get(user_id=user.id).id
+            form = form.save()
             for item in BasketItems.objects.filter(basket_id=basket_id):
-                OrderItems(product=item.product, quantity=item.quantity).save()
+                OrderItems(product=item.product, quantity=item.quantity, order_id=form.id).save()
                 item.delete()
-            new_prod = form.save()
-            new_prod.user_id = user
-            new_prod.save()
             return basket(request)
     else:
         form = OrderForm
         return render(request, 'orderform.html', {'form': form})
+
+
+@login_required
+@admin_required
+def all_orders(request):
+    orders = [o for o in Order.objects.all()]
+    return render(request, "all_orders.html", {"orders": orders})

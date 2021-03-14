@@ -13,5 +13,6 @@ urlpatterns = [
     path('logout/', views.logout_view, name="logout"),
     path('addbasket/<int:prod_id>', views.add_to_basket, name="add_to_basket"),
     path('basket/', views.basket, name="view_basket"),
-    path('order/', views.order, name="make_order")
+    path('order/', views.order, name="make_order"),
+    path('all_orders', views.all_orders, name="view_orders")
 ]
