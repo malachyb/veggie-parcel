@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Single Order{% endblock %}
+
+{% block content %}
+    {% for p in products %}
+        <div class="card">
+            <img class="card-img-top" src="..." alt="Card image cap">
+            <div class="card-body">
+                <h5 class="card-title">{{ p.name }}</h5>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}
