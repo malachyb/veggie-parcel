@@ -135,5 +135,9 @@ def all_orders(request):
 @admin_required
 def view_order(request, order_id):
     order_products = OrderItems.objects.filter(order_id=order_id)
-    products = [Product.objects.get(id=o.product_id) for o in order_products]
+    products = []
+    for o in order_products:
+        p = Product.objects.get(id=o.product_id)
+        p.quantity = o.quantity
+        products.append(p)
     return render(request, "single_order.html", {"products": products})
