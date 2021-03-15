@@ -9,7 +9,7 @@
             <div class="card-body">
                 <h5 class="card-title">{{ p.name }}</h5>
                 <p class="card-text">{{ p.description }}</p>
-                <a href="../addbasket/{{ p.id }}" class="btn btn-primary">Buy - {{ p.price }}</a>
+                <a href="/product/{{ p.id }}" class="btn btn-primary">Buy</a>
             </div>
         </div>
     {% endfor %}

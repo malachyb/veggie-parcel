@@ -16,7 +16,7 @@
             <form action="/addbasket/{{ product.id }}" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 {{ form.as_table }}
-                <input type="submit" value="Buy">
+                <input type="submit" value="Buy - {{ product.price }}">
             </form>
         </div>
     </div>
