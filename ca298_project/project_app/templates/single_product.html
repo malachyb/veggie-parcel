@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}
-{{ product.name }}
+    {{ product.name }}
 {% endblock %}
 
 {% block content %}
@@ -13,7 +13,11 @@
         <div class="card-body">
             <h5 class="card-title">{{ product.name }}</h5>
             <p class="card-text">{{ product.description }}</p>
-            <a href="../addbasket/{{ product.id }}" class="btn btn-primary">Buy - {{ product.price }}</a>
+            <form action="/addbasket/{{ product.id }}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_table }}
+                <input type="submit" value="Buy">
+            </form>
         </div>
     </div>
 {% endblock %}

@@ -1,5 +1,5 @@
 from django.forms import ModelForm, ModelChoiceField
-from .models import Product, User, ProductCategory, Order
+from .models import Product, User, ProductCategory, Order, BasketItems
 from django.contrib.auth.forms import UserCreationForm
 from django.db import transaction
 from django import forms
@@ -55,3 +55,9 @@ class OrderForm(ModelForm):
     class Meta:
         model = Order
         fields = ["shipping_addr"]
+
+
+class BasketItemForm(ModelForm):
+    class Meta:
+        model = BasketItems
+        fields = ["message"]

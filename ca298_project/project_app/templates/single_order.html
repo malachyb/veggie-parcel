@@ -5,10 +5,9 @@
 {% block content %}
     {% for p in products %}
         <div class="card">
-            <img class="card-img-top" src="..." alt="Card image cap">
             <div class="card-body">
                 <h5 class="card-title">{{ p.name }}</h5>
-                <p class="card-text">Quantity: {{ p.quantity }}</p>
+                <p class="card-text">Message: {{ p.message }}</p>
             </div>
         </div>
     {% endfor %}

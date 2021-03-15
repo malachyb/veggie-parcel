@@ -23,7 +23,8 @@ def all_products(request):
 
 def singleproduct(request, prod_id):
     prod = get_object_or_404(Product, pk=prod_id)
-    return render(request, 'single_product.html', {'product': prod})
+    form = BasketItemForm
+    return render(request, 'single_product.html', {'product': prod, 'form': form})
 
 
 @login_required
@@ -95,13 +96,9 @@ def add_to_basket(request, prod_id):
         shopping_basket.save()
 
     product = Product.objects.get(pk=prod_id)
-    basket_items = BasketItems.objects.filter(basket_id=shopping_basket.id, product_id=product.id).first()
-
-    if basket_items is None:
-        basket_items = BasketItems(basket_id=shopping_basket, product_id=product.id).save()
-    else:
-        basket_items.quantity = basket_items.quantity + 1
-        basket_items.save()
+    message = request.POST.get("message")
+    basket_item = BasketItems(basket_id=shopping_basket, product_id=product.id, message=message, price=product.price)
+    basket_item.save()
 
     return basket(request)
 
@@ -116,7 +113,7 @@ def order(request):
             basket_id = Basket.objects.get(user_id=user.id).id
             form = form.save()
             for item in BasketItems.objects.filter(basket_id=basket_id):
-                OrderItems(product=item.product, quantity=item.quantity, order_id=form.id).save()
+                OrderItems(product=item.product, message=item.message, order_id=form.id).save()
                 item.delete()
             return basket(request)
     else:
@@ -138,6 +135,6 @@ def view_order(request, order_id):
     products = []
     for o in order_products:
         p = Product.objects.get(id=o.product_id)
-        p.quantity = o.quantity
+        p.message = o.message
         products.append(p)
     return render(request, "single_order.html", {"products": products})

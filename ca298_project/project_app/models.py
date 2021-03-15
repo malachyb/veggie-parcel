@@ -30,11 +30,8 @@ class Order(models.Model):
 class OrderItems(models.Model):
     id = models.AutoField(primary_key=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.IntegerField()
+    message = models.CharField(max_length=100)
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
-
-    def price(self):
-        return self.product.price * self.quantity
 
 
 class Basket(models.Model):
@@ -46,7 +43,8 @@ class BasketItems(models.Model):
     id = models.AutoField(primary_key=True)
     basket_id = models.ForeignKey(Basket, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.IntegerField(default=1)
+    message = models.CharField(max_length=100)
+    price = models.DecimalField(max_digits=5, decimal_places=2)
 
 
 class Vegetable(models.Model):
