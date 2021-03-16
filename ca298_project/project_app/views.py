@@ -45,8 +45,13 @@ def basket(request):
     user = request.user
     basket_id = Basket.objects.get(user_id=user.id).id
     user_basket = BasketItems.objects.filter(basket_id=basket_id)
-    products = [Product.objects.get(id=item.product_id) for item in user_basket]
-    return render(request, 'basket.html', {'basket': user_basket, "products": products})
+    products = []
+    for item in user_basket:
+        p = Product.objects.get(id=item.product_id)
+        p.message = item.message
+        products.append(p)
+    price = sum([p.price for p in products])
+    return render(request, 'basket.html', {'basket': user_basket, "products": products, "price": price})
 
 
 class UserSignupView(CreateView):

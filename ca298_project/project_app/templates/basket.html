@@ -9,8 +9,9 @@
             <div class="card-body">
                 <h5 class="card-title">{{ p.name }}</h5>
                 <p class="card-text">{{ p.description }}</p>
+                <p class="card-text">{{ p.message }}</p>
             </div>
         </div>
     {% endfor %}
-    <a href="/order" class="btn btn-primary">Order all</a>
+    <a href="/order" class="btn btn-primary">Order all - {{ price }}</a>
 {% endblock %}
