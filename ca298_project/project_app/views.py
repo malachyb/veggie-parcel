@@ -109,9 +109,10 @@ def order(request):
         form = OrderForm(request.POST)
         if form.is_valid():
             user = request.user
-            form.user_id = user
             basket_id = Basket.objects.get(user_id=user.id).id
             form = form.save()
+            form.user_id = user
+            form.save()
             for item in BasketItems.objects.filter(basket_id=basket_id):
                 OrderItems(product=item.product, message=item.message, order_id=form.id).save()
                 item.delete()
@@ -137,4 +138,14 @@ def view_order(request, order_id):
         p = Product.objects.get(id=o.product_id)
         p.message = o.message
         products.append(p)
-    return render(request, "single_order.html", {"products": products})
+    return render(request, "single_order.html", {"products": products, "order": order_id})
+
+
+@login_required
+@admin_required
+def complete_order(request, order_id):
+    order_products = OrderItems.objects.filter(order_id=order_id)
+    Order.objects.get(id=order_id).delete()
+    for o in order_products:
+        o.delete()
+    return all_orders(request)
