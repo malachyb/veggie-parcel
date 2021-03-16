@@ -10,6 +10,7 @@
                 <h5 class="card-title">{{ p.name }}</h5>
                 <p class="card-text">{{ p.description }}</p>
                 <p class="card-text">{{ p.message }}</p>
+                <a href="/remove_basket/{{ p.basket_item_id }}" class="btn btn-primary">Remove from Basket</a>
             </div>
         </div>
     {% endfor %}
