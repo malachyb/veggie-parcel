@@ -58,7 +58,7 @@ def basket(request):
 @login_required
 def remove_basket(request, item_id):
     BasketItems.objects.get(id=item_id).delete()
-    return basket(request)
+    return redirect("/basket/")
 
 
 class UserSignupView(CreateView):
@@ -112,7 +112,7 @@ def add_to_basket(request, prod_id):
     basket_item = BasketItems(basket_id=shopping_basket, product_id=product.id, message=message, price=product.price)
     basket_item.save()
 
-    return basket(request)
+    return redirect("/basket/")
 
 
 @login_required
@@ -128,7 +128,7 @@ def order(request):
             for item in BasketItems.objects.filter(basket_id=basket_id):
                 OrderItems(product=item.product, message=item.message, order_id=form.id).save()
                 item.delete()
-            return basket(request)
+            return redirect("/basket/")
     else:
         form = OrderForm
         return render(request, 'orderform.html', {'form': form})
@@ -160,4 +160,4 @@ def complete_order(request, order_id):
     Order.objects.get(id=order_id).delete()
     for o in order_products:
         o.delete()
-    return all_orders(request)
+    return redirect("/all_orders/")
