@@ -12,10 +12,6 @@ def index(request):
     return render(request, 'index.html')
 
 
-def register(request):
-    return render(request, 'registration.html')
-
-
 def all_products(request):
     all_p = Product.objects.all()
     return render(request, 'all_vegetables.html', {'products': all_p})
