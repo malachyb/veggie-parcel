@@ -47,7 +47,15 @@ class BasketItems(models.Model):
     price = models.DecimalField(max_digits=5, decimal_places=2)
 
 
-class Vegetable(models.Model):
+class CompletedOrder(models.Model):
     id = models.AutoField(primary_key=True)
-    veg_name = models.CharField(max_length=50)
-    price = models.DecimalField(max_digits=5, decimal_places=2)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    date_created = models.DateField(auto_now_add=True, null=True)
+    shipping_addr = models.CharField(max_length=200, null=True)
+
+
+class CompletedOrderItems(models.Model):
+    id = models.AutoField(primary_key=True)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    message = models.CharField(max_length=100)
+    order = models.ForeignKey(CompletedOrder, on_delete=models.CASCADE)

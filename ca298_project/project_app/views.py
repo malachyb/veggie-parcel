@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import *
-from .models import Product, User, Basket, BasketItems, Order, OrderItems
+from .models import *
 from django.views.generic import CreateView
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
@@ -124,10 +124,28 @@ def order(request):
             for item in BasketItems.objects.filter(basket_id=basket_id):
                 OrderItems(product=item.product, message=item.message, order_id=form.id).save()
                 item.delete()
-            return redirect("/basket/")
+            return redirect("/orders/")
     else:
         form = OrderForm
         return render(request, 'orderform.html', {'form': form})
+
+
+@login_required
+def user_orders(request):
+    orders = Order.objects.filter(user_id=request.user)
+    completed_orders = CompletedOrder.objects.filter(user_id=request.user)
+    return render(request, "user_orders.html", {"orders": orders, "comp_orders": completed_orders})
+
+
+@login_required
+def user_view_order(request, order_id):
+    order_products = OrderItems.objects.filter(order_id=order_id)
+    products = []
+    for o in order_products:
+        p = Product.objects.get(id=o.product_id)
+        p.message = o.message
+        products.append(p)
+    return render(request, "user_single_order.html", {"products": products, "order": order_id})
 
 
 @login_required
@@ -153,7 +171,12 @@ def view_order(request, order_id):
 @admin_required
 def complete_order(request, order_id):
     order_products = OrderItems.objects.filter(order_id=order_id)
-    Order.objects.get(id=order_id).delete()
-    for o in order_products:
-        o.delete()
-    return redirect("/all_orders/")
+    o = Order.objects.get(id=order_id)
+    comp_o = CompletedOrder(date_created=o.date_created, shipping_addr=o.shipping_addr, user_id=o.user_id)
+    comp_o.save()
+    o.delete()
+    for oi in order_products:
+        comp_oi = CompletedOrderItems(product_id=oi.product_id, order_id=comp_o, message=oi.message)
+        comp_oi.save()
+        oi.delete()
+    return redirect("/admin_all_orders/")

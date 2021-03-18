@@ -8,7 +8,7 @@
             <div class="card-body">
                 <p class="card-title">{{ order.date_created }}</p>
                 <p class="card-text">{{ order.shipping_addr }}</p>
-                <a href="/view_order/{{ order.id }}" class="btn btn-primary">view products</a>
+                <a href="/admin_view_order/{{ order.id }}" class="btn btn-primary">view products</a>
             </div>
         </div>
     {% endfor %}
