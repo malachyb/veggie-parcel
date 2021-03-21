@@ -3,16 +3,22 @@
 {% block title %}Vegetables{% endblock %}
 
 {% block content %}
-    {% for p in products %}
-        <div class="card">
-            <img class="card-img-top" src="..." alt="Card image cap">
-            <div class="card-body">
-                <h5 class="card-title">{{ p.name }}</h5>
-                <p class="card-text">{{ p.description }}</p>
-                <p class="card-text">{{ p.message }}</p>
-                <a href="/remove_basket/{{ p.basket_item_id }}" class="btn btn-primary">Remove from Basket</a>
-            </div>
+    <div class="container pb-5 mb-sm-1">
+        <div class="row">
+            {% for p in products %}
+                <div class="col-md-4 col-sm-6">
+                    <div class="card border-0" style="width: 18rem;">
+                        <img class="card-img-top" src="{{ p.picture.url }}" alt="Card image cap">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ p.name }}</h5>
+                            <p class="card-text">{{ p.description }}</p>
+                            <p class="card-text">{{ p.message }}</p>
+                            <a href="/remove_basket/{{ p.basket_item_id }}" class="btn btn-dark">Remove from Basket</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
         </div>
-    {% endfor %}
-    <a href="/order" class="btn btn-primary">Order all - {{ price }}</a>
+    </div>
+    <a href="/order" class="btn btn-dark fixed-bottom mx-auto" style="width: 15rem;">Order all - {{ price }}</a>
 {% endblock %}
