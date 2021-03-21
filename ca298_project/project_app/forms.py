@@ -16,7 +16,7 @@ class ProductForm(ModelForm):
 
     class Meta:
         model = Product
-        fields = ['name', 'description', 'price', 'picture', 'category']
+        fields = ["name", "description", "price", "picture", "category"]
 
 
 class SignupForm(UserCreationForm):
@@ -54,7 +54,7 @@ class UserLoginForm(AuthenticationForm):
 class OrderForm(ModelForm):
     class Meta:
         model = Order
-        fields = ["shipping_addr"]
+        fields = ["Shipping Address", "Card Number", "Card Holder Name", "Card Expiry Date", "Security Code"]
 
 
 class BasketItemForm(ModelForm):
