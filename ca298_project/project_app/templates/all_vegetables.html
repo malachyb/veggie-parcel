@@ -3,14 +3,23 @@
 {% block title %}Vegetables{% endblock %}
 
 {% block content %}
-    {% for p in products %}
-        <div class="card" style="width: 18rem;">
-            <img class="card-img-top" src="{{ p.picture.url }}" alt="Card image cap" style="width: 100%; height: 15vw; object-fit: cover;">
-            <div class="card-body">
-                <h5 class="card-title">{{ p.name }}</h5>
-                <p class="card-text">{{ p.description }}</p>
-                <a href="/product/{{ p.id }}" class="btn btn-primary">Buy - {{ p.price }}</a>
-            </div>
+    <div class="container pb-5 mb-sm-1">
+        <div class="row">
+            {% for p in products %}
+                <div class="col-md-4 col-sm-6">
+                    <a href="/product/{{ p.id }}" class="text-dark">
+                        <div class="card border-0" style="width: 18rem;">
+                            <img class="card-img-top" src="{{ p.picture.url }}" alt="Card image cap"
+                                 style="width: 100%; height: 15vw; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ p.name }}</h5>
+                                <p class="card-text">{{ p.description }}</p>
+                                <a href="/product/{{ p.id }}" class="btn btn-dark btn-block">Buy - {{ p.price }}</a>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
         </div>
-    {% endfor %}
+    </div>
 {% endblock %}
