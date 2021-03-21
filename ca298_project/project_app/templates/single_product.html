@@ -8,15 +8,16 @@
     {% if added %}
         <h1>Added product</h1>
     {% endif %}
-    <div class="card" style="width: 18rem;">
-        <img class="card-img-top" src="{{ product.picture.url }}" alt="Card image cap" style="width: 100%; height: 15vw; object-fit: cover;">
+    <div class="card border-0 mx-auto" style="width: 18rem;">
+        <img class="card-img-top" src="{{ product.picture.url }}" alt="Card image cap"
+             style="width: 100%; height: 15vw; object-fit: cover;">
         <div class="card-body">
             <h5 class="card-title">{{ product.name }}</h5>
             <p class="card-text">{{ product.description }}</p>
             <form action="/addbasket/{{ product.id }}" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 {{ form.as_table }}
-                <input class="btn btn-primary" type="submit" value="Buy - {{ product.price }}">
+                <input class="btn btn-dark mt-3" type="submit" value="Buy - {{ product.price }}">
             </form>
         </div>
     </div>
