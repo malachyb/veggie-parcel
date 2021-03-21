@@ -9,12 +9,21 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <form action="." method="POST">
         {% csrf_token %}
+        <img src="{% static 'images/welcome.jpeg' %}" alt="login logo" class="login">
         {% for field in form %}
             <div class="form-group">
                 <label for="{{ field.name }}">{{ field.label }}</label>
-                    {{ field }}
+                <input type="text" class="form-control" name="{{ field.name }}" id="{{ field.name }}">
+                {% if field.errors %}
+                    <div class="alert alert-danger" role="alert">
+                    {% for error in field.errors %}
+                          {{ error }}
+                    {% endfor %}
+                    </div>
+                {% endif %}
+
             </div>
         {% endfor %}
-        <button type="submit" class="btn btn-primary">SUBMIT</button>
+        <button type="submit" class="btn btn-primary">Sign Up</button>
     </form>
 {% endblock %}
