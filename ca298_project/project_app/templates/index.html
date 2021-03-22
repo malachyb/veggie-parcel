@@ -1,6 +1,29 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}My homepage{% endblock %}
 
 {% block content %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <div class="card">
+        <img src="{% static 'images/vegetables.jpeg' %}" alt="Vegetables" style="width: 100%">
+        <div class="container">
+            <h4><b>About Us</b></h4>
+            <p>The basic idea of our website is to allow users to buy all sorts of vegetables related gift products, and
+                put down the messages that they want to carve into the vegetables. Whether they want to let friends and
+                family members have an unforgettable gift, or just for trolls to make one another happy. This is the
+                perfect website to buy memorable gifts that are unique and fun. The goal of this website is to bring
+                laughter and smiles on people’s faces. We want them to have a unique experience with a gift that they
+                never have received before. Instead of giving some traditional gifts like cards, chocolates etcs. We
+                want to break the traditional barriers and make a gift that not only can bring joy and happiness to
+                people but also make things interesting, rather than having some traditional, boring gifts.</p>
+
+            <p>Customers can customize their gifts with different choices of vegetables. Whether it’s images or just
+                lines of words. We’ll wrap them up nicely and also pack into a box with all stuff that is associated
+                with your chosen vegetables. We also have a mystery box section where if the user wants to have more
+                mystery vibe but don’t know which vegetables to pick. We’ll be picking a random selection of vegetables
+                and sending it to the customer, who doesn’t know what they are going to get.</p>
+        </div>
+    </div>
 {% endblock %}
