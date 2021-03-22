@@ -5,26 +5,38 @@
 {% block content %}
     {% if orders|length > 0 %}
         <h3> Active Orders</h3>
-        {% for order in orders %}
-            <div class="card">
-                <div class="card-body">
-                    <p class="card-title">{{ order.date_created }}</p>
-                    <p class="card-text">{{ order.shipping_addr }}</p>
-                    <a href="/view_order/{{ order.id }}" class="btn btn-primary">view products</a>
-                </div>
+        <div class="container pb-5 mb-sm-1">
+            <div class="row">
+                {% for order in orders %}
+                    <div class="col-md-4 col-sm-4">
+                        <div class="card border-0">
+                            <div class="card-body">
+                                <p class="card-title">{{ order.date_created }}</p>
+                                <p class="card-text">{{ order.shipping_addr }}</p>
+                                <a href="/admin_view_order/{{ order.id }}" class="btn btn-dark">view products</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
             </div>
-        {% endfor %}
+        </div>
     {% endif %}
     {% if comp_orders|length > 0 %}
         <h3> Active Orders</h3>
-        {% for order in comp_orders %}
-            <div class="card">
-                <div class="card-body">
-                    <p class="card-title">{{ order.date_created }}</p>
-                    <p class="card-text">{{ order.shipping_addr }}</p>
-                    <a href="/view_order/{{ order.id }}" class="btn btn-primary">view products</a>
+        <div class="container pb-5 mb-sm-1">
+        <div class="row">
+            {% for order in comp_orders %}
+                <div class="col-md-4 col-sm-4">
+                    <div class="card border-0">
+                        <div class="card-body">
+                            <p class="card-title">{{ order.date_created }}</p>
+                            <p class="card-text">{{ order.shipping_addr }}</p>
+                            <a href="/admin_view_order/{{ order.id }}" class="btn btn-dark">view products</a>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        {% endfor %}
+            {% endfor %}
+        </div>
+    </div>
     {% endif %}
 {% endblock %}

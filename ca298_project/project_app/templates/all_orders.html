@@ -3,13 +3,19 @@
 {% block title %}All Orders{% endblock %}
 
 {% block content %}
-    {% for order in orders %}
-        <div class="card">
-            <div class="card-body">
-                <p class="card-title">{{ order.date_created }}</p>
-                <p class="card-text">{{ order.shipping_addr }}</p>
-                <a href="/admin_view_order/{{ order.id }}" class="btn btn-primary">view products</a>
-            </div>
+    <div class="container pb-5 mb-sm-1">
+        <div class="row">
+            {% for order in orders %}
+                <div class="col-md-4 col-sm-4">
+                    <div class="card border-0">
+                        <div class="card-body">
+                            <p class="card-title">{{ order.date_created }}</p>
+                            <p class="card-text">{{ order.shipping_addr }}</p>
+                            <a href="/admin_view_order/{{ order.id }}" class="btn btn-dark">view products</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
         </div>
-    {% endfor %}
+    </div>
 {% endblock %}
