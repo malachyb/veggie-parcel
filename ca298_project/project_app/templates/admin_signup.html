@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <form action="." method="POST">
         {% csrf_token %}
-        <img src="{% static 'images/welcome.jpeg' %}" alt="login logo" class="login">
+        <img src="{% static 'images/welcome.jpeg' %}" alt="welcome logo" class="welcome">
         {% for field in form %}
             <div class="form-group">
                 <label for="{{ field.name }}">{{ field.label }}</label>

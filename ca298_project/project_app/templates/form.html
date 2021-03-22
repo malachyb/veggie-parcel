@@ -1,11 +1,19 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Add Product{% endblock %}
 
 {% block content %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <form action="/productform/" method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ form.as_table }}
-        <input type="submit" value="submit">
+        <img src="{% static 'images/form.png' %}" alt="form logo" class="form">
+        {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.name }}">{{ field.label }}</label>
+                {{ field }}
+            </div>
+        {% endfor %}
+        <input type="submit" class="btn btn-primary" value="submit">
     </form>
 {% endblock %}
