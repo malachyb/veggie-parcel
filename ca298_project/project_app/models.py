@@ -25,6 +25,8 @@ class Order(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     date_created = models.DateField(auto_now_add=True, null=True)
     shipping_addr = models.CharField(max_length=200, null=True)
+    credit_card_number = models.IntegerField(max_length=16, null=0)
+    ccv = models.IntegerField(max_length=3, null=0)
 
 
 class OrderItems(models.Model):

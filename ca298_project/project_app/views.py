@@ -124,7 +124,7 @@ def order(request):
             for item in BasketItems.objects.filter(basket_id=basket_id):
                 OrderItems(product=item.product, message=item.message, order_id=form.id).save()
                 item.delete()
-            return redirect("/orders/")
+        return redirect("/orders/")
     else:
         form = OrderForm
         return render(request, 'orderform.html', {'form': form})
