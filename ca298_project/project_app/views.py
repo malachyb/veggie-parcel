@@ -149,6 +149,17 @@ def user_view_order(request, order_id):
 
 
 @login_required
+def user_view_complete_order(request, order_id):
+    order_products = CompletedOrderItems.objects.filter(order_id=order_id)
+    products = []
+    for o in order_products:
+        p = Product.objects.get(id=o.product_id)
+        p.message = o.message
+        products.append(p)
+    return render(request, "user_single_order.html", {"products": products, "order": order_id})
+
+
+@login_required
 @admin_required
 def all_orders(request):
     orders = [o for o in Order.objects.all()]
@@ -170,13 +181,15 @@ def view_order(request, order_id):
 @login_required
 @admin_required
 def complete_order(request, order_id):
-    order_products = OrderItems.objects.filter(order_id=order_id)
     o = Order.objects.get(id=order_id)
+    order_products = OrderItems.objects.filter(order_id=o.id)
+    print(len(order_products))
     comp_o = CompletedOrder(date_created=o.date_created, shipping_addr=o.shipping_addr, user_id=o.user_id)
     comp_o.save()
     o.delete()
     for oi in order_products:
-        comp_oi = CompletedOrderItems(product_id=oi.product_id, order_id=comp_o, message=oi.message)
+        comp_oi = CompletedOrderItems(product_id=oi.product_id, order_id=comp_o.id, message=oi.message)
+        print(comp_oi)
         comp_oi.save()
         oi.delete()
     return redirect("/admin_all_orders/")
