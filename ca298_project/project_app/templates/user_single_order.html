@@ -3,12 +3,18 @@
 {% block title %}Single Order{% endblock %}
 
 {% block content %}
-    {% for p in products %}
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">{{ p.name }}</h5>
-                <p class="card-text">Message: {{ p.message }}</p>
-            </div>
+    <div class="container pb-5 mb-sm-1">
+        <div class="row">
+            {% for p in products %}
+                <div class="col-md-4 col-sm-6">
+                    <div class="card border-0">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ p.name }}</h5>
+                            <p class="card-text">Message: {{ p.message }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
         </div>
-    {% endfor %}
+    </div>
 {% endblock %}
