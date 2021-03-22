@@ -25,6 +25,11 @@
             <a class="nav-item nav-link" href="/">Home <span class="sr-only">(current)</span></a>
             <a class="nav-item nav-link" href="/all_products">Shop</a>
             <a class="nav-item nav-link" href="/basket">Basket</a>
+            {% if request.user.is_admin %}
+                <a class="nav-item nav-link" href="/admin_all_orders">Orders</a>
+                <a class="nav-item nav-link" href="/admin_signup">New Admin</a>
+                <a class="nav-item nav-link" href="/productform">New Product</a>
+            {% endif %}
         </div>
 
         <div class="nav navbar-nav navbar-right">
