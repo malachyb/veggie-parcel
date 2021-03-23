@@ -193,3 +193,7 @@ def complete_order(request, order_id):
         comp_oi.save()
         oi.delete()
     return redirect("/admin_all_orders/")
+
+
+def handler_404(request, *args, **kwargs):
+    return render(request, "404.html")

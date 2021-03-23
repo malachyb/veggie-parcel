@@ -22,3 +22,5 @@ urlpatterns = [
     path('view_order/<int:order_id>', views.user_view_order, name="order"),
     path('view_complete_order/<int:order_id>', views.user_view_complete_order, name="complete_order")
 ]
+
+handler404 = 'project_app.views.handler_404'

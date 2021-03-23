@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Error 404{% endblock %}
+
+{% block content %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <div class="card">
+        <div class="container">
+            <h4><b>Error 404</b></h4>
+            <p>The page you requested cannot be found</p>
+        </div>
+    </div>
+{% endblock %}
