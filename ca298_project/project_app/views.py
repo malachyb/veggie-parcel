@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import *
 from .models import *
@@ -6,6 +7,7 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
 from .permissions import admin_required
+from django.core import serializers
 
 
 def index(request):
@@ -14,7 +16,13 @@ def index(request):
 
 def all_products(request):
     all_p = Product.objects.all()
-    return render(request, 'all_vegetables.html', {'products': all_p})
+
+    flag = request.GET.get('format', '')
+    if flag == "json":
+        serialised_products = serializers.serialize("json", all_p)
+        return HttpResponse(serialised_products, content_type="application/json")
+    else:
+        return render(request, 'all_vegetables.html', {'products': all_p})
 
 
 def singleproduct(request, prod_id):
