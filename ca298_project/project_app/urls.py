@@ -1,6 +1,13 @@
-from django.urls import path
+from django.urls import path, include
 from . import views
 from .forms import UserLoginForm
+from rest_framework import routers
+from rest_framework.authtoken.views import obtain_auth_token
+
+
+router = routers.DefaultRouter()
+router.register(r'users', views.UserViewSet)
+router.register(r'products', views.ProductViewSet)
 
 urlpatterns = [
     path('', views.index, name="index"),
@@ -20,7 +27,9 @@ urlpatterns = [
     path('remove_basket/<int:item_id>', views.remove_basket, name="remove_basket"),
     path('orders/', views.user_orders, name="orders"),
     path('view_order/<int:order_id>', views.user_view_order, name="order"),
-    path('view_complete_order/<int:order_id>', views.user_view_complete_order, name="complete_order")
+    path('view_complete_order/<int:order_id>', views.user_view_complete_order, name="complete_order"),
+    path('api/', include(router.urls)),
+    path('token/', obtain_auth_token, name="api_token_auth")
 ]
 
 handler404 = 'project_app.views.handler_404'
