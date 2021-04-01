@@ -8,6 +8,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
 from .permissions import admin_required
 from django.core import serializers
+from rest_framework import viewsets
+from .serializers import *
 
 
 def index(request):
@@ -205,3 +207,15 @@ def complete_order(request, order_id):
 
 def handler_404(request, *args, **kwargs):
     return render(request, "404.html")
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+
+class ProductViewSet(viewsets.ModelViewSet):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    authentication_classes = []
+    permission_classes = []
