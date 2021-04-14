@@ -7,7 +7,7 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
 from .permissions import admin_required
-from django.core import serializers
+from django.core import serializers as core_serializers
 from rest_framework import viewsets
 from .serializers import *
 
@@ -21,7 +21,7 @@ def all_products(request):
 
     flag = request.GET.get('format', '')
     if flag == "json":
-        serialised_products = serializers.serialize("json", all_p)
+        serialised_products = core_serializers.serialize("json", all_p)
         return HttpResponse(serialised_products, content_type="application/json")
     else:
         return render(request, 'all_vegetables.html', {'products': all_p})
