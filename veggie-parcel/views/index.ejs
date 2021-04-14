@@ -7,10 +7,38 @@
   <body>
     <h1><%= title %></h1>
     <p>Welcome to <%= title %></p>
+
+    <table id="product-table">
+      <tr>
+        <td>Name</td>
+        <td>Description</td>
+        <td>Price</td>
+      </tr>
+    </table>
+
     <script>
       fetch("http://localhost:8000/api/products/?format=json") // make a request to this endpoint
       .then(response => response.json()) // with our response, get the json data returned
-      .then(data => console.log(data)); // log the json data
+      .then(data => {
+        console.log(data) // log the json data
+        data.forEach(element => {
+          let table = document.getElementById("product-table")
+          let newRow = document.createElement("tr")
+          table.appendChild(newRow)
+
+          let name = document.createElement("td")
+          name.innerHTML = element['name']
+          newRow.appendChild(name)
+
+          let desc = document.createElement("td")
+          desc.innerHTML = element['description']
+          newRow.appendChild(desc)
+
+          let price = document.createElement("td")
+          price.innerHTML = element['price']
+          newRow.appendChild(price)
+        })
+      });
     </script>
   </body>
 </html>
