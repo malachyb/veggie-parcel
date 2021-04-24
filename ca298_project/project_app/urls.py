@@ -1,8 +1,33 @@
 from django.urls import path, include
 from . import views
 from .forms import UserLoginForm
-from rest_framework import routers
+from rest_framework import routers, serializers, viewsets
+from .models import User, Product
 from rest_framework.authtoken.views import obtain_auth_token
+
+
+class UserSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = User
+        fields = ['url', 'username', 'email', 'is_staff']
+
+
+class ProductSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Product
+        fields = ['id', 'name', 'description', 'price', 'picture']
+
+
+class ProductViewSet(viewsets.ModelViewSet):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    authentication_classes = []
+    permission_classes = []
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
 
 router = routers.DefaultRouter()

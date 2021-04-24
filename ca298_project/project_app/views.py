@@ -1,14 +1,25 @@
+import json
+
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import *
-from .models import *
 from django.views.generic import CreateView
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
-from .permissions import admin_required
 from django.core import serializers as core_serializers
 from rest_framework import viewsets
+from rest_framework.authentication import SessionAuthentication, BaseAuthentication
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import authentication_classes, permission_classes
+from rest_framework.authtoken.models import Token
+from django.forms.models import model_to_dict
+from django.core.serializers import serialize
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+
+from .forms import *
+from .models import *
+from .permissions import admin_required
 from .serializers import *
 
 
@@ -46,9 +57,14 @@ def product_form(request):
         return render(request, 'form.html', {'form': form})
 
 
-@login_required
+# @login_required
+@authentication_classes([SessionAuthentication, BaseAuthentication])
+@permission_classes([IsAuthenticated])
 def basket(request):
     user = request.user
+    if user.is_anonymous:
+        token = request.META.get('HTTP_AUTHORIZATION').split(" ")[1]
+        user = Token.objects.get(key=token).user
     basket_id = Basket.objects.get(user_id=user.id).id
     user_basket = BasketItems.objects.filter(basket_id=basket_id)
     products = []
@@ -58,10 +74,21 @@ def basket(request):
         p.basket_item_id = item.id
         products.append(p)
     price = sum([p.price for p in products])
+    flag = request.GET.get('format', '')  # url?format=json&name=John   {'format':'json', 'name':'John'}
+    if flag == "json":
+        basket_array = []
+        for basket_item in user_basket:
+            tmp = {'product': basket_item.product.name, 'price': float(basket_item.product.price),
+                   'quantity': int(basket_item.quantity)}
+            basket_array.append(tmp)
+        return HttpResponse(json.dumps({'items': basket_array}), content_type="application/json")
+
     return render(request, 'basket.html', {'basket': user_basket, "products": products, "price": price})
 
 
-@login_required
+# @login_required
+@authentication_classes([SessionAuthentication, BaseAuthentication])
+@permission_classes([IsAuthenticated])
 def remove_basket(request, item_id):
     BasketItems.objects.get(id=item_id).delete()
     return redirect("/basket/")
@@ -104,9 +131,14 @@ def logout_view(request):
     return redirect('/')
 
 
-@login_required
+# @login_required
+@authentication_classes([SessionAuthentication, BaseAuthentication])
+@permission_classes([IsAuthenticated])
 def add_to_basket(request, prod_id):
     user = request.user
+    if user.is_anonymous:
+        token = request.META.get('HTTP_AUTHORIZATION').split(" ")[1]
+        user = Token.objects.get(key=token).user
     try:
         shopping_basket = Basket.objects.get(user_id=user)
     except:
@@ -117,16 +149,30 @@ def add_to_basket(request, prod_id):
     message = request.POST.get("message")
     basket_item = BasketItems(basket_id=shopping_basket, product_id=product.id, message=message, price=product.price)
     basket_item.save()
-
+    flag = request.GET.get('format', '')  # url?format=json&name=John   {'format':'json', 'name':'John'}
+    if flag == "json":
+        return JsonResponse({'status': 'success'})
     return redirect("/basket/")
 
 
-@login_required
+# @login_required
+@authentication_classes([SessionAuthentication, BaseAuthentication])
+@permission_classes([IsAuthenticated])
+@csrf_exempt
 def order(request):
     if request.method == "POST":
         form = OrderForm(request.POST)
         if form.is_valid():
+            if not request.POST:  # if the data is not inside the request.POSt, it is inside the body
+                body_unicode = request.body.decode('utf-8')
+                body = json.loads(body_unicode)
+                form = OrderForm(body)
+            else:
+                form = OrderForm(request.POST)
             user = request.user
+            if user.is_anonymous:
+                token = request.META.get('HTTP_AUTHORIZATION').split(" ")[1]
+                user = Token.objects.get(key=token).user
             basket_id = Basket.objects.get(user_id=user.id).id
             form = form.save()
             form.user_id = user
@@ -134,20 +180,27 @@ def order(request):
             for item in BasketItems.objects.filter(basket_id=basket_id):
                 OrderItems(product=item.product, message=item.message, order_id=form.id).save()
                 item.delete()
+        flag = request.GET.get('format', '')  # url?format=json&name=John   {'format':'json', 'name':'John'}
+        if flag == "json":
+            return JsonResponse({"status": "success"})
         return redirect(f"/view_order/{form.id}")
     else:
         form = OrderForm
         return render(request, 'orderform.html', {'form': form})
 
 
-@login_required
+# @login_required
+@authentication_classes([SessionAuthentication, BaseAuthentication])
+@permission_classes([IsAuthenticated])
 def user_orders(request):
     orders = Order.objects.filter(user_id=request.user)
     completed_orders = CompletedOrder.objects.filter(user_id=request.user)
     return render(request, "user_orders.html", {"orders": orders, "comp_orders": completed_orders})
 
 
-@login_required
+# @login_required
+@authentication_classes([SessionAuthentication, BaseAuthentication])
+@permission_classes([IsAuthenticated])
 def user_view_order(request, order_id):
     order_products = OrderItems.objects.filter(order_id=order_id)
     products = []
@@ -158,7 +211,9 @@ def user_view_order(request, order_id):
     return render(request, "user_single_order.html", {"products": products, "order": order_id})
 
 
-@login_required
+# @login_required
+@authentication_classes([SessionAuthentication, BaseAuthentication])
+@permission_classes([IsAuthenticated])
 def user_view_complete_order(request, order_id):
     order_products = CompletedOrderItems.objects.filter(order_id=order_id)
     products = []
