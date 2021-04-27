@@ -78,7 +78,8 @@ def basket(request):
     if flag == "json":
         basket_array = []
         for basket_item in user_basket:
-            tmp = {'product': basket_item.product.name, 'price': float(basket_item.product.price)}
+            tmp = {'product': basket_item.product.name, 'price': float(basket_item.product.price),
+                   'message': basket_item.message}
             basket_array.append(tmp)
         return HttpResponse(json.dumps({'items': basket_array}), content_type="application/json")
 
