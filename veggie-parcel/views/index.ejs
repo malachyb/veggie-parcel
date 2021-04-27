@@ -32,9 +32,13 @@
         <tr>
           <td>Name</td>
           <td>Price</td>
-          <td>Total</td>
         </tr>
       </table>
+      <form id="checkout-form" method="POST" action=".">
+        <label for="shipping_addr">Shipping Address</label>
+        <input type="text" name="shipping_addr" placeholder="Shipping Address" id="shipping_addr">
+        <button id="checkout-button" type="submit">Checkout</button>
+      </form>
     </div>
 
     <script>
@@ -75,11 +79,11 @@
           newRow.appendChild(buttonContainer)
 
         })
-      });
+      })
 
       let loginForm = document.getElementById("login-form")
       loginForm.addEventListener("submit", (event) => {
-        event.preventDefault();
+        event.preventDefault()
         let user = document.getElementById("form-username").value
         let pass = document.getElementById("form-password").value
         fetch("http://localhost:8000/token/", {
@@ -104,7 +108,7 @@
               'Content-Type': 'application/json',
               'Authorization': 'Token '+window.token
             }
-          }).then(response => response.json()).then(data => console.log(data));
+          }).then(response => response.json()).then(data => console.log(data))
         }
         else {
           alert("Please login to continue")
@@ -113,7 +117,7 @@
 
       function showBasket() {
         if (window.token) {
-          fetch("http://localhost:8000/addbasket/", {
+          fetch("http://localhost:8000/basket/?format=json", {
             method:'GET',
             headers:{
               'Accept': 'application/json',
@@ -133,10 +137,6 @@
               let price = document.createElement("td")
               price.innerHTML = element['price']
               newRow.appendChild(price)
-
-              let total = document.createElement("td")
-              total.innerHTML = element['quantity']*element['price']
-              newRow.appendChild(total)
             })
           })
         }
@@ -147,9 +147,30 @@
 
       let showBasketButton = document.getElementById("show-basket")
       showBasketButton.addEventListener("click", (event) => {
-        event.preventDefault();
+        event.preventDefault()
         showBasket()
       })
+
+      let checkoutButton = document.getElementById("checkout-button")
+      checkoutButton.addEventListener("submit", (event) => {
+        event.preventDefault()
+        let ship_addr = document.getElementById("shipping_addr").value
+
+        fetch("http://localhost:8000/order/?format=json", {
+          method:'POST',
+          headers:{
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Token '+window.token
+          },
+          body:JSON.stringify({shipping_addr:ship_addr})
+        }).then(function(response){
+          console.log(response)
+          return response.json()
+        }).then(function(data){
+          console.log(data)
+        })
+      }, true)
     </script>
   </body>
 </html>
