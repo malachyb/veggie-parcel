@@ -161,14 +161,13 @@ def add_to_basket(request, prod_id):
 @csrf_exempt
 def order(request):
     if request.method == "POST":
-        form = OrderForm(request.POST)
+        if not request.POST:  # if the data is not inside the request.POSt, it is inside the body
+            body_unicode = request.body.decode('utf-8')
+            body = json.loads(body_unicode)
+            form = OrderForm(body)
+        else:
+            form = OrderForm(request.POST)
         if form.is_valid():
-            if not request.POST:  # if the data is not inside the request.POSt, it is inside the body
-                body_unicode = request.body.decode('utf-8')
-                body = json.loads(body_unicode)
-                form = OrderForm(body)
-            else:
-                form = OrderForm(request.POST)
             user = request.user
             if user.is_anonymous:
                 token = request.META.get('HTTP_AUTHORIZATION').split(" ")[1]

@@ -1,182 +1,214 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
+    <link rel='stylesheet' href='/stylesheets/style.css'/>
+</head>
+<body>
+<h1><%= title %></h1>
+<p>Welcome to <%= title %></p>
 
-    <table id="product-table">
-      <tr>
+<table id="product-table">
+    <tr>
         <td>Name</td>
         <td>Description</td>
         <td>Price</td>
         <td>Image</td>
         <td></td>
-      </tr>
-    </table>
+    </tr>
+</table>
 
-    <form id="login-form" method="POST" action=".">
-      <label for="username">Username</label>
-      <input id="form-username" name="username" type="text" placeholder="Username">
-      <label for="password">Password</label>
-      <input id="form-password" name="password" type="password" placeholder="Password">
-      <input type="submit" value="Login">
-    </form>
+<form id="login-form" method="POST" action=".">
+    <label for="username">Username</label>
+    <input id="form-username" name="username" type="text" placeholder="Username">
+    <label for="password">Password</label>
+    <input id="form-password" name="password" type="password" placeholder="Password">
+    <input type="submit" value="Login">
+</form>
 
-    <div id="basket-container">
-      <button id="show-basket">Show Basket</button>
-      <table id="shop-basket">
+<div id="basket-container">
+    <button id="show-basket">Show Basket</button>
+    <table id="shop-basket">
         <tr>
-          <td>Name</td>
-          <td>Price</td>
+            <td>Name</td>
+            <td>Price</td>
         </tr>
-      </table>
-      <form id="checkout-form" method="POST" action=".">
+    </table>
+    <form id="checkout-form" method="post" action="http://localhost:8000/order" target="hidden-iframe">
         <label for="shipping_addr">Shipping Address</label>
         <input type="text" name="shipping_addr" placeholder="Shipping Address" id="shipping_addr">
-        <button id="checkout-button" type="submit">Checkout</button>
-      </form>
-    </div>
+        <label for="credit_card_number">Credit Card Number</label>
+        <input type="text" name="credit_card_number" placeholder="Credit Card Number" id="credit_card_number">
+        <label for="expiry_date">Expiry Date</label>
+        <input type="text" name="expiry_date" placeholder="Expiry Date" id="expiry_date">
+        <label for="ccv">CCV</label>
+        <input type="text" name="ccv" placeholder="CCV" id="ccv">
+        <input type="submit" value="Check out">
+    </form>
+    <iframe id="hidden-iframe" width="0" height="0" style="display: none"></iframe>
+</div>
 
-    <script>
-      fetch("http://localhost:8000/api/products/?format=json") // make a request to this endpoint
-      .then(response => response.json()) // with our response, get the json data returned
-      .then(data => {
-        console.log(data) // log the json data
-        data.forEach(element => {
-          let table = document.getElementById("product-table")
-          let newRow = document.createElement("tr")
-          table.appendChild(newRow)
+<script>
+    fetch("http://localhost:8000/api/products/?format=json") // make a request to this endpoint
+        .then(response => response.json()) // with our response, get the json data returned
+        .then(data => {
+            console.log(data) // log the json data
+            data.forEach(element => {
+                let table = document.getElementById("product-table")
+                let newRow = document.createElement("tr")
+                table.appendChild(newRow)
 
-          let name = document.createElement("td")
-          name.innerHTML = element['name']
-          newRow.appendChild(name)
+                let name = document.createElement("td")
+                name.innerHTML = element['name']
+                newRow.appendChild(name)
 
-          let desc = document.createElement("td")
-          desc.innerHTML = element['description']
-          newRow.appendChild(desc)
+                let desc = document.createElement("td")
+                desc.innerHTML = element['description']
+                newRow.appendChild(desc)
 
-          let price = document.createElement("td")
-          price.innerHTML = element['price']
-          newRow.appendChild(price)
+                let price = document.createElement("td")
+                price.innerHTML = element['price']
+                newRow.appendChild(price)
 
-          let picturetd = document.createElement("td")
-          let picture = document.createElement("img")
-          picture.src = element['picture']
-          newRow.appendChild(picturetd)
-          picturetd.appendChild(picture)
+                let picturetd = document.createElement("td")
+                let picture = document.createElement("img")
+                picture.src = element['picture']
+                newRow.appendChild(picturetd)
+                picturetd.appendChild(picture)
 
-          let messagetd = document.createElement("td")
-          let message = document.createElement("textarea")
-          newRow.appendChild(messagetd)
-          messagetd.appendChild(message)
+                let messagetd = document.createElement("td")
+                let message = document.createElement("textarea")
+                newRow.appendChild(messagetd)
+                messagetd.appendChild(message)
 
-          let buttonContainer = document.createElement("td")
-          let button = document.createElement("button")
-          button.innerHTML = "Add to Basket"
-          button.addEventListener('click', function(){
-            addToBasket(element['id'], message.value)
-          })
-          buttonContainer.appendChild(button)
-          newRow.appendChild(buttonContainer)
+                let buttonContainer = document.createElement("td")
+                let button = document.createElement("button")
+                button.innerHTML = "Add to Basket"
+                button.addEventListener('click', function () {
+                    addToBasket(element['id'], message.value)
+                })
+                buttonContainer.appendChild(button)
+                newRow.appendChild(buttonContainer)
 
+            })
         })
-      })
 
-      let loginForm = document.getElementById("login-form")
-      loginForm.addEventListener("submit", (event) => {
+    let loginForm = document.getElementById("login-form")
+    loginForm.addEventListener("submit", (event) => {
         event.preventDefault()
         let user = document.getElementById("form-username").value
         let pass = document.getElementById("form-password").value
         fetch("http://localhost:8000/token/", {
-          method:'POST',
-          headers:{
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-          },
-          body:JSON.stringify({username:user, password:pass})
-        }).then(response => response.json()).then(function(data){
-          console.log(data)
-          window.token = data['token']
-        })
-      }, true)
-
-      function addToBasket(productId, messageContent) {
-        if (window.token) {
-          fetch("http://localhost:8000/addbasket/"+productId+"?format=json", {
-            method:'POST',
-            headers:{
-              'Accept': 'application/json',
-              'Content-Type': 'application/json',
-              'Authorization': 'Token '+window.token
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
             },
-            body: JSON.stringify({"message": messageContent})
-          }).then(response => response.json()).then(data => console.log(data))
-        }
-        else {
-          alert("Please login to continue")
-        }
-      }
+            body: JSON.stringify({username: user, password: pass})
+        }).then(response => response.json()).then(function (data) {
+            console.log(data)
+            window.token = data['token']
+        })
+    }, true)
 
-      function showBasket() {
-        if (window.token) {
-          fetch("http://localhost:8000/basket/?format=json", {
-            method:'GET',
-            headers:{
-              'Accept': 'application/json',
-              'Content-Type': 'application/json',
-              'Authorization': 'Token '+window.token
+    let checkoutForm = document.getElementById("checkout-form")
+    checkoutForm.addEventListener("submit", (event) => {
+            event.preventDefault()
+            let shipping_addr = document.getElementById("shipping_addr").value
+            let credit_card_number = document.getElementById("credit_card_number").value
+            let expiry_date = document.getElementById("expiry_date").value
+            let ccv = document.getElementById("ccv").value
+            if (window.token) {
+                fetch("http://localhost:8000/order/?format=json", {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Token ' + window.token
+                    },
+                    body: JSON.stringify({
+                        "shipping_addr": shipping_addr,
+                        "credit_card_number": credit_card_number,
+                        "expiry_date": expiry_date,
+                        "ccv": ccv
+                    })
+                }).then(response => response.json()).then(data => console.log(data))
+            } else {
+                alert("Please login to continue")
             }
-          }).then(response => response.json()).then(data => {
-            data['items'].forEach(element => {
-              let table = document.getElementById("shop-basket")
-              let newRow = document.createElement("tr")
-              table.appendChild(newRow)
+        }, true)
 
-              let name = document.createElement("td")
-              name.innerHTML = element['product']
-              newRow.appendChild(name)
+    function addToBasket(productId, messageContent) {
+        if (window.token) {
+            fetch("http://localhost:8000/addbasket/" + productId + "?format=json", {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Token ' + window.token
+                },
+                body: JSON.stringify({"message": messageContent})
+            }).then(response => response.json()).then(data => console.log(data))
+        } else {
+            alert("Please login to continue")
+        }
+    }
 
-              let price = document.createElement("td")
-              price.innerHTML = element['price']
-              newRow.appendChild(price)
+    function showBasket() {
+        if (window.token) {
+            fetch("http://localhost:8000/basket/?format=json", {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Token ' + window.token
+                }
+            }).then(response => response.json()).then(data => {
+                data['items'].forEach(element => {
+                    let table = document.getElementById("shop-basket")
+                    let newRow = document.createElement("tr")
+                    table.appendChild(newRow)
+
+                    let name = document.createElement("td")
+                    name.innerHTML = element['product']
+                    newRow.appendChild(name)
+
+                    let price = document.createElement("td")
+                    price.innerHTML = element['price']
+                    newRow.appendChild(price)
+                })
             })
-          })
+        } else {
+            alert("Please login to continue")
         }
-        else {
-          alert("Please login to continue")
-        }
-      }
+    }
 
-      let showBasketButton = document.getElementById("show-basket")
-      showBasketButton.addEventListener("click", (event) => {
+    let showBasketButton = document.getElementById("show-basket")
+    showBasketButton.addEventListener("click", (event) => {
         event.preventDefault()
         showBasket()
-      })
+    })
 
-      let checkoutButton = document.getElementById("checkout-button")
-      checkoutButton.addEventListener("submit", (event) => {
+    let checkoutButton = document.getElementById("checkout-button")
+    checkoutButton.addEventListener("submit", (event) => {
         event.preventDefault()
         let ship_addr = document.getElementById("shipping_addr").value
 
         fetch("http://localhost:8000/order/?format=json", {
-          method:'POST',
-          headers:{
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'Authorization': 'Token '+window.token
-          },
-          body:JSON.stringify({shipping_addr:ship_addr})
-        }).then(function(response){
-          console.log(response)
-          return response.json()
-        }).then(function(data){
-          console.log(data)
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Token ' + window.token
+            },
+            body: JSON.stringify({shipping_addr: ship_addr})
+        }).then(function (response) {
+            console.log(response)
+            return response.json()
+        }).then(function (data) {
+            console.log(data)
         })
-      }, true)
-    </script>
-  </body>
+    }, true)
+</script>
+</body>
 </html>
