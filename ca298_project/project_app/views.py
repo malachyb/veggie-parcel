@@ -133,6 +133,7 @@ def logout_view(request):
 # @login_required
 @authentication_classes([SessionAuthentication, BaseAuthentication])
 @permission_classes([IsAuthenticated])
+@csrf_exempt
 def add_to_basket(request, prod_id):
     user = request.user
     if user.is_anonymous:
@@ -144,11 +145,11 @@ def add_to_basket(request, prod_id):
         shopping_basket = Basket(user_id=user)
         shopping_basket.save()
 
+    flag = request.GET.get('format', '')  # url?format=json&name=John   {'format':'json', 'name':'John'}
     product = Product.objects.get(pk=prod_id)
-    message = request.POST.get("message")
+    message = request.POST.get("message") if flag != "json" else json.loads(request.body).get("message")
     basket_item = BasketItems(basket_id=shopping_basket, product_id=product.id, message=message, price=product.price)
     basket_item.save()
-    flag = request.GET.get('format', '')  # url?format=json&name=John   {'format':'json', 'name':'John'}
     if flag == "json":
         return JsonResponse({'status': 'success'})
     return redirect("/basket/")

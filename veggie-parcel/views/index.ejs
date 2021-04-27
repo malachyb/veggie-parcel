@@ -69,11 +69,16 @@
           newRow.appendChild(picturetd)
           picturetd.appendChild(picture)
 
+          let messagetd = document.createElement("td")
+          let message = document.createElement("textarea")
+          newRow.appendChild(messagetd)
+          messagetd.appendChild(message)
+
           let buttonContainer = document.createElement("td")
           let button = document.createElement("button")
           button.innerHTML = "Add to Basket"
           button.addEventListener('click', function(){
-            addToBasket(element['id'])
+            addToBasket(element['id'], message.value)
           })
           buttonContainer.appendChild(button)
           newRow.appendChild(buttonContainer)
@@ -99,15 +104,16 @@
         })
       }, true)
 
-      function addToBasket(productId) {
+      function addToBasket(productId, messageContent) {
         if (window.token) {
           fetch("http://localhost:8000/addbasket/"+productId+"?format=json", {
-            method:'GET',
+            method:'POST',
             headers:{
               'Accept': 'application/json',
               'Content-Type': 'application/json',
               'Authorization': 'Token '+window.token
-            }
+            },
+            body: JSON.stringify({"message": messageContent})
           }).then(response => response.json()).then(data => console.log(data))
         }
         else {
