@@ -37,3 +37,12 @@
     -o-background-size: cover;
     background-size: cover;
 }
+
+.carousel-item {
+    height: 60vh;
+    background: no-repeat center center scroll;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
