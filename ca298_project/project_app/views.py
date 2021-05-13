@@ -77,10 +77,9 @@ def basket(request):
     flag = request.GET.get('format', '')  # url?format=json&name=John   {'format':'json', 'name':'John'}
     if flag == "json":
         basket_array = []
-        for basket_item in user_basket:
-            tmp = {'product': basket_item.product.name, 'price': float(basket_item.product.price),
-                   'message': basket_item.message}
-            basket_array.append(tmp)
+        for p in products:
+            item = {"picture": p.picture.url, "product": p.name, "price": f"{float(p.price):.2f}", "message": p.message}
+            basket_array.append(item)
         return HttpResponse(json.dumps({'items': basket_array}), content_type="application/json")
 
     return render(request, 'basket.html', {'basket': user_basket, "products": products, "price": price})
