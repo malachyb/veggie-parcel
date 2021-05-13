@@ -9,7 +9,7 @@ from django.contrib.auth.views import LoginView
 from django.core import serializers as core_serializers
 from rest_framework import viewsets
 from rest_framework.authentication import SessionAuthentication, BaseAuthentication
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.decorators import authentication_classes, permission_classes
 from rest_framework.authtoken.models import Token
 from django.forms.models import model_to_dict
@@ -44,8 +44,8 @@ def singleproduct(request, prod_id):
     return render(request, 'single_product.html', {'product': prod, 'form': form})
 
 
-@login_required
-@admin_required
+@authentication_classes([SessionAuthentication, BaseAuthentication])
+@permission_classes([IsAuthenticated, IsAdminUser])
 def product_form(request):
     if request.method == "POST":
         form = ProductForm(request.POST, request.FILES)
@@ -223,15 +223,19 @@ def user_view_complete_order(request, order_id):
     return render(request, "user_single_order.html", {"products": products, "order": order_id})
 
 
-@login_required
-@admin_required
+@authentication_classes([SessionAuthentication, BaseAuthentication])
+@permission_classes([IsAuthenticated, IsAdminUser])
 def all_orders(request):
     orders = [o for o in Order.objects.all()]
+    flag = request.GET.get('format', '')  # url?format=json&name=John   {'format':'json', 'name':'John'}
+    if flag == "json":
+        return HttpResponse(json.dumps({'orders': json.loads(core_serializers.serialize("json", orders))}),
+                            content_type="application/json")
     return render(request, "all_orders.html", {"orders": orders})
 
 
-@login_required
-@admin_required
+@authentication_classes([SessionAuthentication, BaseAuthentication])
+@permission_classes([IsAuthenticated, IsAdminUser])
 def view_order(request, order_id):
     order_products = OrderItems.objects.filter(order_id=order_id)
     products = []
@@ -242,8 +246,8 @@ def view_order(request, order_id):
     return render(request, "single_order.html", {"products": products, "order": order_id})
 
 
-@login_required
-@admin_required
+@authentication_classes([SessionAuthentication, BaseAuthentication])
+@permission_classes([IsAuthenticated, IsAdminUser])
 def complete_order(request, order_id):
     o = Order.objects.get(id=order_id)
     order_products = OrderItems.objects.filter(order_id=o.id)
@@ -273,3 +277,13 @@ class ProductViewSet(viewsets.ModelViewSet):
     serializer_class = ProductSerializer
     authentication_classes = []
     permission_classes = []
+
+
+@authentication_classes([SessionAuthentication, BaseAuthentication])
+@permission_classes([IsAuthenticated])
+def api_view_order(request, order_id):
+    order_products = OrderItems.objects.filter(order_id=order_id)
+    products = json.loads(core_serializers.serialize("json", [Product.objects.get(id=o.product_id) for o in order_products]))
+    for o, p in zip(order_products, products):
+        p["message"] = o.message
+    return HttpResponse(json.dumps({'products': products, "order": order_id}), content_type="application/json")
