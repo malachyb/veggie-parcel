@@ -3,21 +3,21 @@
 <head>
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css'/>
+
+    <!-- CSS Framework: Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+          integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"
+            integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+            integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"
+            integrity="sha384-LtrjvnR4Twt/qOuYxE721u19sVFLVSA4hf/rRt6PrZTmiPltdZcI7q7PXQBYTKyf"
+            crossorigin="anonymous"></script>
+
 </head>
 <body>
-<h1><%= title %></h1>
-<p>Welcome to <%= title %></p>
-
-<table id="product-table">
-    <tr>
-        <td>Name</td>
-        <td>Description</td>
-        <td>Price</td>
-        <td>Image</td>
-        <td></td>
-    </tr>
-</table>
-
 <form id="login-form" method="POST" action=".">
     <label for="form-username">Username</label>
     <input id="form-username" name="username" type="text" placeholder="Username">
@@ -28,25 +28,31 @@
 
 <div id="basket-container">
     <button id="show-basket">Show Basket</button>
-    <table id="shop-basket">
-        <tr>
-            <td>Name</td>
-            <td>Price</td>
-            <td>Message</td>
-        </tr>
-    </table>
-    <form id="checkout-form" method="post" action="http://localhost:8000/order">
-        <label for="shipping_addr">Shipping Address</label>
-        <input type="text" name="shipping_addr" placeholder="Shipping Address" id="shipping_addr">
-        <label for="credit_card_number">Credit Card Number</label>
-        <input type="text" name="credit_card_number" placeholder="Credit Card Number" id="credit_card_number">
-        <label for="expiry_date">Expiry Date</label>
-        <input type="text" name="expiry_date" placeholder="Expiry Date" id="expiry_date">
-        <label for="ccv">CCV</label>
-        <input type="text" name="ccv" placeholder="CCV" id="ccv">
-        <input type="submit" value="Check out">
-    </form>
+    <div id="basket" style="display: none">
+        <div class="container pb-5 mb-sm-1" id="shop-basket">
+            <div class="row" id="basket-row"></div>
+        </div>
+        <form id="checkout-form" method="post" action="http://localhost:8000/order">
+            <label for="shipping_addr">Shipping Address</label>
+            <input type="text" name="shipping_addr" placeholder="Shipping Address" id="shipping_addr">
+            <label for="credit_card_number">Credit Card Number</label>
+            <input type="text" name="credit_card_number" placeholder="Credit Card Number" id="credit_card_number">
+            <label for="expiry_date">Expiry Date</label>
+            <input type="text" name="expiry_date" placeholder="Expiry Date" id="expiry_date">
+            <label for="ccv">CCV</label>
+            <input type="text" name="ccv" placeholder="CCV" id="ccv">
+            <input type="submit" value="Check out">
+        </form>
+    </div>
 </div>
+
+<h1><%= title %></h1>
+<p>Welcome to <%= title %></p>
+
+<div class="container pb-5 mb-sm-1" id="product-table">
+    <div class="row" id="product-row"></div>
+</div>
+
 
 <script>
     fetch("http://localhost:8000/api/products/?format=json") // make a request to this endpoint
@@ -54,41 +60,38 @@
         .then(data => {
             console.log(data) // log the json data
             data.forEach(element => {
-                let table = document.getElementById("product-table")
-                let newRow = document.createElement("tr")
+                let table = document.getElementById("product-row")
+                let newRow = document.createElement("div")
+                newRow.setAttribute("class", "card mt-5 mx-auto")
+                newRow.setAttribute("style", "width: 18rem;")
                 table.appendChild(newRow)
 
-                let name = document.createElement("td")
-                name.innerHTML = element['name']
-                newRow.appendChild(name)
-
-                let desc = document.createElement("td")
-                desc.innerHTML = element['description']
-                newRow.appendChild(desc)
-
-                let price = document.createElement("td")
-                price.innerHTML = element['price']
-                newRow.appendChild(price)
-
-                let picturetd = document.createElement("td")
                 let picture = document.createElement("img")
                 picture.src = element['picture']
-                newRow.appendChild(picturetd)
-                picturetd.appendChild(picture)
+                picture.setAttribute("class", "card-img-top")
+                picture.setAttribute("style", "width: 100%; height: 15vw; object-fit: cover;")
+                newRow.appendChild(picture)
 
-                let messagetd = document.createElement("td")
+                let name = document.createElement("h5")
+                name.innerHTML = element['name']
+                name.setAttribute("class", "card-title")
+                newRow.appendChild(name)
+
+                let desc = document.createElement("p")
+                desc.innerHTML = element['description']
+                desc.setAttribute("class", "card-text")
+                newRow.appendChild(desc)
+
                 let message = document.createElement("textarea")
-                newRow.appendChild(messagetd)
-                messagetd.appendChild(message)
+                newRow.appendChild(message)
 
-                let buttonContainer = document.createElement("td")
                 let button = document.createElement("button")
-                button.innerHTML = "Add to Basket"
+                button.innerHTML = "Add to Basket - " + element["price"]
+                button.setAttribute("class", "btn btn-dark btn-block mt-3")
                 button.addEventListener('click', function () {
                     addToBasket(element['id'], message.value)
                 })
-                buttonContainer.appendChild(button)
-                newRow.appendChild(buttonContainer)
+                newRow.appendChild(button)
 
             })
         })
@@ -113,30 +116,30 @@
 
     let checkoutForm = document.getElementById("checkout-form")
     checkoutForm.addEventListener("submit", (event) => {
-            event.preventDefault()
-            let shipping_addr = document.getElementById("shipping_addr").value
-            let credit_card_number = document.getElementById("credit_card_number").value
-            let expiry_date = document.getElementById("expiry_date").value
-            let ccv = document.getElementById("ccv").value
-            if (window.token) {
-                fetch("http://localhost:8000/order/?format=json", {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Token ' + window.token
-                    },
-                    body: JSON.stringify({
-                        "shipping_addr": shipping_addr,
-                        "credit_card_number": credit_card_number,
-                        "expiry_date": expiry_date,
-                        "ccv": ccv
-                    })
-                }).then(response => response.json()).then(data => console.log(data))
-            } else {
-                alert("Please login to continue")
-            }
-        }, true)
+        event.preventDefault()
+        let shipping_addr = document.getElementById("shipping_addr").value
+        let credit_card_number = document.getElementById("credit_card_number").value
+        let expiry_date = document.getElementById("expiry_date").value
+        let ccv = document.getElementById("ccv").value
+        if (window.token) {
+            fetch("http://localhost:8000/order/?format=json", {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Token ' + window.token
+                },
+                body: JSON.stringify({
+                    "shipping_addr": shipping_addr,
+                    "credit_card_number": credit_card_number,
+                    "expiry_date": expiry_date,
+                    "ccv": ccv
+                })
+            }).then(response => response.json()).then(data => console.log(data))
+        } else {
+            alert("Please login to continue")
+        }
+    }, true)
 
     function addToBasket(productId, messageContent) {
         if (window.token) {
@@ -155,14 +158,20 @@
     }
 
     function showBasket() {
-        let table = document.getElementById("shop-basket")
-        let tableRows = table.getElementsByTagName('tr');
+        let table = document.getElementById("basket-row")
+        let tableRows = table.getElementsByTagName('div');
         let rowCount = tableRows.length;
 
-        for (let x=rowCount-1; x>0; x--) {
+        for (let x = rowCount - 1; x > 0; x--) {
             table.removeChild(tableRows[x]);
         }
         if (window.token) {
+            let basket = document.getElementById("basket")
+            if (basket.style.display === "none") {
+                basket.style.display = "block"
+            } else {
+                basket.style.display = "none"
+            }
             fetch("http://localhost:8000/basket/?format=json", {
                 method: 'GET',
                 headers: {
@@ -172,12 +181,29 @@
                 }
             }).then(response => response.json()).then(data => {
                 data['items'].forEach(element => {
-                    let newRow = document.createElement("tr")
+                    let newRow = document.createElement("div")
+                    newRow.setAttribute("class", "card mt-5 mx-auto")
                     table.appendChild(newRow)
 
-                    let name = document.createElement("td")
+                    let newCard = document.createElement("div")
+                    newCard.setAttribute("class", "card border-0")
+                    newCard.setAttribute("style", "width: 18rem;")
+                    newRow.appendChild(newCard)
+
+                    let picture = document.createElement("img")
+                    picture.src = "http://localhost:8000" + element['picture']
+                    picture.setAttribute("class", "card-img-top")
+                    picture.setAttribute("style", "width: 100%; height: 15vw; object-fit: cover;")
+                    newCard.appendChild(picture)
+
+                    let cardBody = document.createElement("div")
+                    cardBody.setAttribute("class", "card-body")
+                    newCard.appendChild(cardBody)
+
+                    let name = document.createElement("h5")
+                    name.setAttribute("class", "card-title")
                     name.innerHTML = element['product']
-                    newRow.appendChild(name)
+                    cardBody.appendChild(name)
 
                     let price = document.createElement("td")
                     price.innerHTML = element['price']

@@ -54,7 +54,8 @@ urlpatterns = [
     path('view_order/<int:order_id>', views.user_view_order, name="order"),
     path('view_complete_order/<int:order_id>', views.user_view_complete_order, name="complete_order"),
     path('api/', include(router.urls)),
-    path('token/', obtain_auth_token, name="api_token_auth")
+    path('token/', obtain_auth_token, name="api_token_auth"),
+    path('api_order/<int:order_id>', views.api_view_order, name="api_product_view")
 ]
 
 handler404 = 'project_app.views.handler_404'
