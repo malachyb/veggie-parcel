@@ -111,6 +111,10 @@
         }).then(response => response.json()).then(function (data) {
             console.log(data)
             window.token = data['token']
+        }).then(result => {
+            if (window.token) {
+                loginForm.style.display = "none"
+            }
         })
     }, true)
 
@@ -159,11 +163,8 @@
 
     function showBasket() {
         let table = document.getElementById("basket-row")
-        let tableRows = table.getElementsByTagName('div');
-        let rowCount = tableRows.length;
-
-        for (let x = rowCount - 1; x > 0; x--) {
-            table.removeChild(tableRows[x]);
+        while (table.firstChild) {
+            table.removeChild(table.lastChild)
         }
         if (window.token) {
             let basket = document.getElementById("basket")
