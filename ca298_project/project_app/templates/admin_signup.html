@@ -13,7 +13,7 @@
         {% for field in form %}
             <div class="form-group">
                 <label for="{{ field.name }}">{{ field.label }}</label>
-                <input type="text" class="form-control" name="{{ field.name }}" id="{{ field.name }}">
+                <input type="{{ field.field.widget.input_type }}" class="form-control" name="{{ field.name }}" id="{{ field.name }}">
                 {% if field.errors %}
                     <div class="alert alert-danger" role="alert">
                     {% for error in field.errors %}
