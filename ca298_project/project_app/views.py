@@ -107,13 +107,25 @@ class UserSignupView(CreateView):
         return redirect('/')
 
 
+@csrf_exempt
 def signup(request):
     if request.method == "POST":
-        form = SignupForm(request.POST)
+        if not request.POST:  # if the data is not inside the request.POSt, it is inside the body
+            body_unicode = request.body.decode('utf-8')
+            body = json.loads(body_unicode)
+            form = SignupForm(body)
+        else:
+            form = SignupForm(request.POST)
+        print(form.data)
+        print(request.body)
         if form.is_valid():
             user = form.save()
             login(request, user)
+            flag = request.GET.get('format', '')
+            if flag == "json":
+                return JsonResponse({"status": "success"})
             return redirect("/")
+        print("form is not valid")
     else:
         form = SignupForm()
         return render(request, "user_signup.html", {"form": form})
