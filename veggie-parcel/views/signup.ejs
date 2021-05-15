@@ -18,18 +18,26 @@
 
 </head>
 <body>
-<h1><%= title %></h1>
-<p>Welcome to <%= title %></p>
+<h1 class="text-center">Sign Up</h1>
+<h5 class="text-center">Welcome to <%= title %>!</h5>
 
-<form id="signup-form" method="POST" action=".">
-    <label for="form-username">Username</label>
-    <input id="form-username" name="username" type="text" placeholder="Username">
-    <label for="form-password">Password</label>
-    <input id="form-password" name="password" type="password" placeholder="Password">
-    <label for="form-password2">Confirm Password</label>
-    <input id="form-password2" name="password2" type="password" placeholder="Confirm Password">
-    <input type="submit" value="Sign Up">
-</form>
+<div class="row justify-content-center pt-3">
+    <form class="form-border" id="signup-form" method="POST" action=".">
+        <div class="form-group">
+            <label for="form-username">Username</label>
+            <input class="form-control" id="form-username" name="username" type="text" placeholder="Username">
+        </div>
+        <div class="form-group">
+            <label for="form-password">Password</label>
+            <input class="form-control" id="form-password" name="password" type="password" placeholder="Password">
+        </div>
+        <div class="form-group">
+            <label for="form-password2">Confirm Password</label>
+            <input class="form-control" id="form-password2" name="password2" type="password" placeholder="Confirm Password">
+        </div>
+        <button type="submit" class="btn btn-primary">Sign Up</button>
+    </form>
+</div>
 
 <script>
     let loginForm = document.getElementById("signup-form")

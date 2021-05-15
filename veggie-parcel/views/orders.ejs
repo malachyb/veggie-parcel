@@ -18,6 +18,7 @@
 
 </head>
 <body>
+<h3>View Orders</h3>
 <form id="login-form" method="POST" action=".">
     <div class="form-group row">
         <div class="col-sm-3">
@@ -91,9 +92,10 @@
                     name.innerHTML = element['fields']['date_created']
                     cardBody.appendChild(name)
 
-                    let price = document.createElement("td")
+                    let price = document.createElement("p")
                     price.innerHTML = element['fields']['shipping_addr']
-                    newRow.appendChild(price)
+                    price.setAttribute("class", "card-text")
+                    cardBody.appendChild(price)
 
                     let button = document.createElement("button")
                     button.innerHTML = "View Order"
@@ -101,7 +103,7 @@
                     button.addEventListener('click', function () {
                         showOrder(element["pk"])
                     })
-                    newRow.appendChild(button)
+                    cardBody.appendChild(button)
                 })
             })
         } else {
@@ -148,13 +150,15 @@
                     name.innerHTML = element['fields']['name']
                     cardBody.appendChild(name)
 
-                    let price = document.createElement("td")
+                    let price = document.createElement("p")
+                    price.setAttribute("class", "card-text")
                     price.innerHTML = element['fields']['price']
-                    newRow.appendChild(price)
+                    cardBody.appendChild(price)
 
-                    let message = document.createElement("td")
+                    let message = document.createElement("p")
+                    message.setAttribute("class", "card-text")
                     message.innerHTML = element['message']
-                    newRow.appendChild(message)
+                    cardBody.appendChild(message)
                 })
             })
         } else {
